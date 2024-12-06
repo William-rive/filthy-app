@@ -1,11 +1,17 @@
-import Home from './home/page';
+import { auth } from "@/src/lib/auth";
+import { LoginButton, LogoutButton } from "./AuthButtons";
 
-const Page: React.FC = () => {
+export default async function Home() {
+  const session = await auth();
   return (
-    <div className="card-center">
-      <Home />
+    <div>
+      <h1>
+        {session?.user 
+        ? "Authentificated" + session?.user.email
+        : "Not Authentificated"}
+      </h1>
+      <div>{!session?.user ? <LoginButton />: <LogoutButton />}
+      </div>
     </div>
   );
-};
-
-export default Page;
+}

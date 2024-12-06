@@ -1,17 +1,13 @@
 import { auth } from "@/src/lib/auth";
-import { LoginButton, LogoutButton } from "./AuthButtons";
+import NavBar from "./components/navbar";
+import HomePage from "./home/page";
 
 export default async function Home() {
   const session = await auth();
   return (
     <div>
-      <h1>
-        {session?.user 
-        ? "Authentificated" + session?.user.email
-        : "Not Authentificated"}
-      </h1>
-      <div>{!session?.user ? <LoginButton />: <LogoutButton />}
-      </div>
+      <NavBar session={session} />
+      <HomePage />
     </div>
   );
 }

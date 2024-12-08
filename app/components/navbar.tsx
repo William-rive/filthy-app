@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { LoginButton, LogoutButton } from "./AuthButtons";
+import { auth } from '@/auth/authSetup';
 
-import { Session } from 'next-auth';
+export default async function NavBar() {
 
-export default function NavBar({ session }: { session: Session | null }) {
-
+    const session = await auth();
     return (
         <nav className="bg-gray-800 ">
             <div className='flex items-center justify-between px-6 py-4 '>
@@ -40,4 +40,4 @@ export default function NavBar({ session }: { session: Session | null }) {
             </div>
         </nav>
     );
-}
+};

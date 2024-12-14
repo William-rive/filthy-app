@@ -34,6 +34,8 @@ const HomePage: React.FC = () => {
 
     return (
         <section className='bg-slate-800 flex flex-col justify-center'>
+
+            {/** Hero Section */}
             <div>
                 <div className="flex justify-center items-center flex-col text-center bg-cover bg-center h-screen"
                     style={{ backgroundImage: 'url(/assets/carrousel.jpg)' }}>
@@ -44,14 +46,17 @@ const HomePage: React.FC = () => {
                 </div>
             </div>
 
+            {/** Events Section */}
             <div className='flex flex-col justify-center items-center mt-10'>
                 <EventList events={events} />
             </div>
 
+            {/** Add Event Section */}
             <div className="flex mt-10 justify-center">
                 <EventForm onAddEvent={handleAddEvent} />
             </div>
 
+            {/** About Section */}
             <div className="flex flex-col md:flex-row items-center mt-10 bg-white p-6">
                 <div className="md:w-1/2">
                     <Image src="/assets/filthy.png" alt="filthy inc logo" className="rounded-lg" width={800} height={500} />                </div>
@@ -66,6 +71,7 @@ const HomePage: React.FC = () => {
                 </div>
             </div>
 
+            {/** Sponsor Section */}
             <div className="flex flex-col items-center mt-10 bg-slate-800 p-6">
                 <h2 className='text-5xl text-white mb-4'>Sponsor</h2>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-4 w-full">

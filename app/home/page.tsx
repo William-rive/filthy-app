@@ -1,54 +1,27 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { fetchEvents, addEvent } from '../../controller/HomeController';
 import { Event } from '../../models/EventModel';
+import EventForm from '../components/event/EventForm';
+import EventList from '../components/event/EventList';
 
 const HomePage: React.FC = () => {
     const [events, setEvents] = useState<Event[]>([]);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [date, setDate] = useState('');
-    const [location, setLocation] = useState('');
 
     useEffect(() => {
-        const fetchEvents = async () => {
-            try {
-                const response = await fetch('/api/events');
-                if (response.ok) {
-                    const events = await response.json();
-                    setEvents(events);
-                } else {
-                    console.error('Failed to fetch events:', response.statusText);
-                }
-            } catch (error) {
-                console.error('Failed to fetch events:', error);
-            }
+        const loadEvents = async () => {
+            const events = await fetchEvents();
+            setEvents(events);
         };
 
-        fetchEvents();
+        loadEvents();
     }, []);
 
-    const handleAddEvent = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('/api/events', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ title, description, date, location }),
-            });
-            if (response.ok) {
-                const newEvent = await response.json();
-                setEvents([...events, newEvent]);
-                setTitle('');
-                setDescription('');
-                setDate('');
-                setLocation('');
-            } else {
-                console.error('Failed to add event:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Failed to add event:', error);
+    const handleAddEvent = async (title: string, description: string, date: string, location: string) => {
+        const newEvent = await addEvent(title, description, date, location);
+        if (newEvent) {
+            setEvents([...events, newEvent]);
         }
     };
 
@@ -72,49 +45,25 @@ const HomePage: React.FC = () => {
             </div>
 
             <div className='flex flex-col justify-center items-center mt-10'>
-                <div id="events-section" className="w-5/6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-24">
-                    {events.map((event) => (
-                        <div key={event.id} className="bg-white p-6 rounded-lg shadow-lg">
-                            <h2 className="text-2xl font-bold mb-2">{event.title}</h2>
-                            <p className="text-gray-700 mb-4">{event.description}</p>
-                            <p className="text-gray-500">{new Date(event.date).toLocaleDateString()}</p>
-                            <p className="text-gray-500">{event.location}</p>
-                        </div>
-                    ))}
-                </div>
+                <EventList events={events} />
             </div>
 
             <div className="flex mt-10 justify-center">
-                <form onSubmit={handleAddEvent} className="mt-10 mb-2 ml-5 flex flex-col">
-                    <input
-                        type="text"
-                        placeholder="Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="mb-2 px-4 py-2 border rounded"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        className="mb-2 px-4 py-2 border rounded"
-                    />
-                    <input
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        className="mb-2 px-4 py-2 border rounded"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Location"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        className="mb-2 px-4 py-2 border rounded"
-                    />
-                    <button type="submit" className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">Add Event</button>
-                </form>
+                <EventForm onAddEvent={handleAddEvent} />
+            </div>
+
+            <div className="flex flex-col md:flex-row items-center mt-10 bg-white p-6 rounded-lg shadow-lg">
+                <div className="md:w-1/2">
+                    <Image src="/assets/filthy.png" alt="Description of image" className="rounded-lg" width={700} height={500} />                </div>
+                <div className="md:w-1/2 mt-4 md:mt-0 md:ml-6">
+                    <h2 className="text-2xl font-bold mb-2">Your Title Here</h2>
+                    <p className="text-gray-700 mb-4">
+                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nemo modi unde eveniet ut ad odit, a dolores natus
+                        nisi provident, veniam corporis et possimus illo voluptatibus maxime molestiae. Reprehenderit, similique.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum culpa amet, voluptas molestiae asperiores
+                        illum omnis quis commodi fugit, deleniti, mollitia harum ad aliquam non quam esse libero. Provident, harum?
+                    </p>
+                </div>
             </div>
         </section>
     );

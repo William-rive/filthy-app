@@ -8,6 +8,7 @@ import EventList from '../components/event/EventList';
 
 const HomePage: React.FC = () => {
     const [events, setEvents] = useState<Event[]>([]);
+    const [showScroll, setShowScroll] = useState(false);
 
     useEffect(() => {
         const loadEvents = async () => {
@@ -16,6 +17,17 @@ const HomePage: React.FC = () => {
         };
 
         loadEvents();
+
+        const handleScroll = () => {
+            if (window.scrollY > 300) {
+                setShowScroll(true);
+            } else {
+                setShowScroll(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const handleAddEvent = async (title: string, description: string, date: string, location: string) => {
@@ -32,8 +44,12 @@ const HomePage: React.FC = () => {
         }
     };
 
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     return (
-        <section className='bg-slate-800 flex flex-col justify-center'>
+        <section className='bg-slate-800 flex flex-col justify-center pt-24'>
 
             {/** Hero Section */}
             <div>
@@ -57,10 +73,10 @@ const HomePage: React.FC = () => {
             </div>
 
             {/** About Section */}
-            <div className="flex flex-col md:flex-row items-center mt-10 bg-white p-6">
-                <div className="md:w-1/2">
-                    <Image src="/assets/filthy.png" alt="filthy inc logo" className="rounded-lg" width={800} height={500} />                </div>
-                <div className="md:w-1/2 mt-4 md:mt-0 md:ml-6">
+            <div className="flex flex-col md:flex-row items-center p-10 bg-white mt-10">
+                <div className="md:w-1/2 p-10">
+                    <Image src="/assets/filthy.png" alt="filthy inc logo" className="rounded-lg" width={800} height={800} />                </div>
+                <div className="md:w-1/2 mt-4 md:mt-0 md:ml-6 p-10">
                     <h2 className="text-5xl font-bold mb-4">About us</h2>
                     <p className="text-gray-700 mb-4">
                         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nemo modi unde eveniet ut ad odit, a dolores natus
@@ -92,6 +108,15 @@ const HomePage: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {showScroll && (
+                <button
+                    onClick={scrollToTop}
+                    className="fixed bottom-6 right-6 py-3 px-5 bg-blue-500 text-white rounded-lg"
+                >
+                    ↑
+                </button>
+            )}
 
         </section>
     );

@@ -28,7 +28,7 @@ const HomePage: React.FC = () => {
     const scrollToEvents = () => {
         const eventsSection = document.getElementById('events-section');
         if (eventsSection) {
-            eventsSection.scrollIntoView({ behavior: 'smooth' });
+            eventsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     };
 
@@ -61,7 +61,7 @@ const HomePage: React.FC = () => {
                 <div className="md:w-1/2">
                     <Image src="/assets/filthy.png" alt="filthy inc logo" className="rounded-lg" width={800} height={500} />                </div>
                 <div className="md:w-1/2 mt-4 md:mt-0 md:ml-6">
-                    <h2 className="text-2xl font-bold mb-2">About us</h2>
+                    <h2 className="text-5xl font-bold mb-4">About us</h2>
                     <p className="text-gray-700 mb-4">
                         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nemo modi unde eveniet ut ad odit, a dolores natus
                         nisi provident, veniam corporis et possimus illo voluptatibus maxime molestiae. Reprehenderit, similique.
@@ -76,19 +76,19 @@ const HomePage: React.FC = () => {
                 <h2 className='text-5xl text-white mb-4'>Sponsor</h2>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-4 w-full">
                     <div className="flex justify-center">
-                        <Image src="/assets/backgroundfilthy.gif" alt="Image 1" className="rounded-lg" width={300} height={200} />
+                        <Image src="/assets/backgroundfilthy.gif" alt="Image 1" className="rounded-lg" width={300} height={200} unoptimized/>
                     </div>
                     <div className="flex justify-center">
-                        <Image src="/assets/backgroundfilthy.gif" alt="Image 2" className="rounded-lg" width={300} height={200} />
+                        <Image src="/assets/backgroundfilthy.gif" alt="Image 2" className="rounded-lg" width={300} height={200} unoptimized/>
                     </div>
                     <div className="flex justify-center">
-                        <Image src="/assets/backgroundfilthy.gif" alt="Image 3" className="rounded-lg" width={300} height={200} />
+                        <Image src="/assets/backgroundfilthy.gif" alt="Image 3" className="rounded-lg" width={300} height={200} unoptimized/>
                     </div>
                     <div className="flex justify-center">
-                        <Image src="/assets/backgroundfilthy.gif" alt="Image 3" className="rounded-lg" width={300} height={200} />
+                        <Image src="/assets/backgroundfilthy.gif" alt="Image 3" className="rounded-lg" width={300} height={200} unoptimized/>
                     </div>
                     <div className="flex justify-center">
-                        <Image src="/assets/backgroundfilthy.gif" alt="Image 3" className="rounded-lg" width={300} height={200} />
+                        <Image src="/assets/backgroundfilthy.gif" alt="Image 3" className="rounded-lg" width={300} height={200} unoptimized/>
                     </div>
                 </div>
             </div>

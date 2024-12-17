@@ -16,8 +16,23 @@ export async function GET(req: NextRequest) {
                           mode: 'insensitive',
                       },
                   },
+                  include: {
+                      tags: {
+                          include: {
+                              tag: true,
+                          },
+                      },
+                  },
               })
-            : await prisma.tune.findMany();
+            : await prisma.tune.findMany({
+                  include: {
+                      tags: {
+                          include: {
+                              tag: true,
+                          },
+                      },
+                  },
+              });
         return NextResponse.json(tunes, { status: 200 });
     } catch (error) {
         console.error('Failed to fetch tunes:', error);
@@ -26,7 +41,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-    const { name, description, code, postedBy } = await req.json();
+    const { name, description, code, postedBy, tags } = await req.json();
 
     try {
         const tune = await prisma.tune.create({
@@ -35,6 +50,23 @@ export async function POST(req: NextRequest) {
                 description,
                 code,
                 postedBy,
+                tags: {
+                    create: tags.map((tag: string) => ({
+                        tag: {
+                            connectOrCreate: {
+                                where: { name: tag },
+                                create: { name: tag },
+                            },
+                        },
+                    })),
+                },
+            },
+            include: {
+                tags: {
+                    include: {
+                        tag: true,
+                    },
+                },
             },
         });
         return NextResponse.json(tune, { status: 201 });
@@ -45,7 +77,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-    const { id, name, description, code, postedBy } = await req.json();
+    const { id, name, description, code, postedBy, tags } = await req.json();
 
     try {
         const tune = await prisma.tune.update({
@@ -55,6 +87,24 @@ export async function PUT(req: NextRequest) {
                 description,
                 code,
                 postedBy,
+                tags: {
+                    deleteMany: {},
+                    create: tags.map((tag: string) => ({
+                        tag: {
+                            connectOrCreate: {
+                                where: { name: tag },
+                                create: { name: tag },
+                            },
+                        },
+                    })),
+                },
+            },
+            include: {
+                tags: {
+                    include: {
+                        tag: true,
+                    },
+                },
             },
         });
         return NextResponse.json(tune, { status: 200 });

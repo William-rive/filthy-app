@@ -96,4 +96,20 @@ model Tune {
   createdAt   DateTime @default(now())
   postedBy    String
   updatedAt   DateTime @updatedAt
+  tags        TuneTag[]
+}
+
+model Tag {
+  id    String   @id @default(uuid())
+  name  String   @unique
+  tunes TuneTag[]
+}
+
+model TuneTag {
+  tuneId String
+  tagId  String
+  tune   Tune   @relation(fields: [tuneId], references: [id])
+  tag    Tag    @relation(fields: [tagId], references: [id])
+
+  @@id([tuneId, tagId])
 }

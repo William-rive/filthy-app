@@ -1,4 +1,5 @@
 import { Tune } from '../models/TuneModel';
+import { Tag } from '@/models/TagModel';
 
 export const fetchTunes = async (): Promise<Tune[]> => {
     try {
@@ -15,14 +16,29 @@ export const fetchTunes = async (): Promise<Tune[]> => {
     }
 };
 
-export const addTune = async (name: string, description: string, code: string, postedBy: string): Promise<Tune | null> => {
+export const fetchTags = async (): Promise<Tag[]> => {
+    try {
+        const response = await fetch('/api/tags');
+        if (response.ok) {
+            return await response.json();
+        } else {
+            console.error('Failed to fetch tags:', response.statusText);
+            return [];
+        }
+    } catch (error) {
+        console.error('Failed to fetch tags:', error);
+        return [];
+    }
+};
+
+export const addTune = async (name: string, description: string, code: string, postedBy: string, tags: string[]): Promise<Tune | null> => {
     try {
         const response = await fetch('/api/tunes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ name, description, code, postedBy }),
+            body: JSON.stringify({ name, description, code, postedBy, tags }),
         });
         if (response.ok) {
             return await response.json();

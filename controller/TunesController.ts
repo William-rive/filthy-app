@@ -35,3 +35,18 @@ export const addTune = async (name: string, description: string, code: string, p
         return null;
     }
 };
+
+export const searchTunes = async (name: string): Promise<Tune[]> => {
+    try {
+        const response = await fetch(`/api/tunes?name=${encodeURIComponent(name)}`);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            console.error('Failed to search tunes:', response.statusText);
+            return [];
+        }
+    } catch (error) {
+        console.error('Failed to search tunes:', error);
+        return [];
+    }
+};

@@ -3,9 +3,21 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url);
+    const name = searchParams.get('name');
+
     try {
-        const tunes = await prisma.tune.findMany();
+        const tunes = name
+            ? await prisma.tune.findMany({
+                  where: {
+                      name: {
+                          contains: name,
+                          mode: 'insensitive',
+                      },
+                  },
+              })
+            : await prisma.tune.findMany();
         return NextResponse.json(tunes, { status: 200 });
     } catch (error) {
         console.error('Failed to fetch tunes:', error);

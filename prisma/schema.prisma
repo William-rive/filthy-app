@@ -87,3 +87,13 @@ model Event {
   updatedAt   DateTime @updatedAt
   finished    Boolean  @default(false)
 }
+
+model Tune {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  code        String
+  createdAt   DateTime @default(now())
+  postedBy    String
+  updatedAt   DateTime @updatedAt
+}

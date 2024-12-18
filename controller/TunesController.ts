@@ -16,6 +16,21 @@ export const fetchTunes = async (): Promise<Tune[]> => {
     }
 };
 
+export const fetchTuneById = async (id: string): Promise<Tune | null> => {
+    try {
+        const response = await fetch(`/api/tunes/${id}`);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            console.error('Failed to fetch tune:', response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error('Failed to fetch tune:', error);
+        return null;
+    }
+};
+
 export const fetchTags = async (): Promise<Tag[]> => {
     try {
         const response = await fetch('/api/tags');
@@ -52,9 +67,9 @@ export const addTune = async (name: string, description: string, code: string, p
     }
 };
 
-export const searchTunes = async (name: string): Promise<Tune[]> => {
+export const searchTunes = async (query: string): Promise<Tune[]> => {
     try {
-        const response = await fetch(`/api/tunes?name=${encodeURIComponent(name)}`);
+        const response = await fetch(`/api/tunes?name=${query}`);
         if (response.ok) {
             return await response.json();
         } else {

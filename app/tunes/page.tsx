@@ -1,9 +1,11 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { fetchTunes, addTune, fetchTags } from '../../controller/TunesController';
+import { fetchTunes, addTune, fetchTags, fetchTuneById } from '../../controller/TunesController';
 import { useDebouncedSearch } from '../../hooks/useDebouncerSearch';
 import { Tag } from '../../models/TagModel';
 import { MultiSelect } from '../components/MultiSelect';
+import { Tune } from '../../models/TuneModel';
+import Modal from '../components/Modal';
 
 const TunesPage: React.FC = () => {
     const { query, setQuery, results, setResults } = useDebouncedSearch();
@@ -14,6 +16,8 @@ const TunesPage: React.FC = () => {
     const [tags, setTags] = useState<string[]>([]);
     const [availableTags, setAvailableTags] = useState<Tag[]>([]);
     const [filteredResults, setFilteredResults] = useState(results);
+    const [selectedTune, setSelectedTune] = useState<Tune | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const loadTunes = async () => {
@@ -52,6 +56,21 @@ const TunesPage: React.FC = () => {
             setPostedBy('');
             setTags([]);
         }
+    };
+
+    const handleSelectTune = async (id: string) => {
+        const tune = await fetchTuneById(id);
+        if (tune) {
+            setSelectedTune(tune);
+            setIsModalOpen(true);
+        } else {
+            console.error('Failed to fetch tune details');
+        }
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedTune(null);
     };
 
     return (
@@ -113,17 +132,42 @@ const TunesPage: React.FC = () => {
 
             <ul>
                 {filteredResults.map((tune) => (
-                    <li key={tune.id} className="mb-4 p-4 border rounded">
-                        <h2 className="text-xl font-bold">{tune.name}</h2>
-                        <p>{tune.description}</p>
-                        <p>Code: {tune.code}</p>
-                        <p>Posted by: {tune.postedBy}</p>
-                        <p>Tags: {tune.tags.map(tuneTag => tuneTag.tag.name).join(', ')}</p>
-                        <p>Created at: {new Date(tune.createdAt).toLocaleDateString()}</p>
-                        <p>Last updated: {new Date(tune.updatedAt).toLocaleDateString()}</p>
+                    <li key={tune.id} className="mb-4 p-4 border rounded flex justify-between items-center cursor-pointer" onClick={() => handleSelectTune(tune.id)}>
+                        <div className="flex-1">
+                            <h2 className="text-xl font-bold">{tune.name}</h2>
+                            <p>{tune.description}</p>
+                            <p>Last updated: {new Date(tune.updatedAt).toLocaleDateString()}</p>
+                        </div>
+                        <div className="flex flex-wrap">
+                            {tune.tags.map((tuneTag, index) => (
+                                <span key={index} className="m-1 px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">
+                                    {tuneTag.tag.name}
+                                </span>
+                            ))}
+                        </div>
                     </li>
                 ))}
             </ul>
+
+            <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+                {selectedTune && (
+                    <div>
+                        <h2 className="text-2xl font-bold mb-4">{selectedTune.name}</h2>
+                        <p>{selectedTune.description}</p>
+                        <p>Code: {selectedTune.code}</p>
+                        <p>Posted by: {selectedTune.postedBy}</p>
+                        <p>Created at: {new Date(selectedTune.createdAt).toLocaleDateString()}</p>
+                        <p>Last updated: {new Date(selectedTune.updatedAt).toLocaleDateString()}</p>
+                        <div className="flex flex-wrap">
+                            {selectedTune.tags.map((tuneTag, index) => (
+                                <span key={index} className="m-1 px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-sm">
+                                    {tuneTag.tag.name}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </div>
     );
 };

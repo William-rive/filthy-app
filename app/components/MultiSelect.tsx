@@ -73,7 +73,7 @@ export const MultiSelect: React.FC<{
                 </div>
             </div>
             {isOpen && (
-                <div className="absolute shadow top-100 bg-white z-40 w-full lef-0 rounded max-h-select overflow-y-auto">
+                <div className="absolute shadow top-100 bg-white z-50 w-full left-0 rounded max-h-60 overflow-y-auto">
                     <div className="flex flex-col w-full">
                         {options.map((option, index) => (
                             <div

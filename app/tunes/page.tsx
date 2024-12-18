@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchTunes, addTune, fetchTags } from '../../controller/TunesController';
 import { useDebouncedSearch } from '../../hooks/useDebouncerSearch';
-import {  Tag } from '../../models/TagModel';
+import { Tag } from '../../models/TagModel';
 import { MultiSelect } from '../components/MultiSelect';
 
 const TunesPage: React.FC = () => {
@@ -13,6 +13,7 @@ const TunesPage: React.FC = () => {
     const [postedBy, setPostedBy] = useState('');
     const [tags, setTags] = useState<string[]>([]);
     const [availableTags, setAvailableTags] = useState<Tag[]>([]);
+    const [filteredResults, setFilteredResults] = useState(results);
 
     useEffect(() => {
         const loadTunes = async () => {
@@ -28,6 +29,17 @@ const TunesPage: React.FC = () => {
         loadTunes();
         loadTags();
     }, [setResults]);
+
+    useEffect(() => {
+        if (tags.length === 0) {
+            setFilteredResults(results);
+        } else {
+            const filtered = results.filter(tune =>
+                tune.tags.some(tuneTag => tags.includes(tuneTag.tag.name))
+            );
+            setFilteredResults(filtered);
+        }
+    }, [tags, results]);
 
     const handleAddTune = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -54,6 +66,11 @@ const TunesPage: React.FC = () => {
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search for tunes..."
                     className="px-4 py-2 border rounded w-full mb-4"
+                />
+                <MultiSelect
+                    options={availableTags}
+                    selectedOptions={tags}
+                    onChange={setTags}
                 />
             </form>
 
@@ -95,7 +112,7 @@ const TunesPage: React.FC = () => {
             </form>
 
             <ul>
-                {results.map((tune) => (
+                {filteredResults.map((tune) => (
                     <li key={tune.id} className="mb-4 p-4 border rounded">
                         <h2 className="text-xl font-bold">{tune.name}</h2>
                         <p>{tune.description}</p>

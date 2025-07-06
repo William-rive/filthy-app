@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { fetchTunes, fetchTags, addTune, fetchTuneById } from '../controller/TunesController';
+import { useState, useEffect, useCallback } from 'react';
+import { fetchTunes, addTune, updateTune, deleteTune, fetchTags, fetchTuneById } from '../controller/TunesController';
 import { Tag } from '../models/TagModel';
 import { Tune } from '../models/TuneModel';
 
+// Custom hook pour gérer les tunes
 export const useTunes = () => {
     const [results, setResults] = useState<Tune[]>([]);
     const [filteredResults, setFilteredResults] = useState<Tune[]>([]);
@@ -25,21 +26,38 @@ export const useTunes = () => {
         loadTags();
     }, []);
 
-    const filterTunes = (tags: string[]) => {
+    const filterTunes = useCallback((tags: string[]) => {
         if (tags.length === 0) {
             setFilteredResults(results);
         } else {
             const filtered = results.filter(tune =>
                 tune.tags.some(tuneTag => tags.includes(tuneTag.tag.name))
             );
-            setFilteredResults(filtered);
+    
+            if (filtered.length !== filteredResults.length || !filtered.every((tune, index) => tune.id === filteredResults[index]?.id)) {
+                setFilteredResults(filtered);
+            }
         }
-    };
+    }, [results, filteredResults]);  // Ajoute les dépendances nécessaires
 
     const handleAddTune = async (name: string, description: string, code: string, postedBy: string, tags: string[]) => {
         const newTune = await addTune(name, description, code, postedBy, tags);
         if (newTune) {
             setResults([...results, newTune]);
+        }
+    };
+
+    const handleUpdateTune = async (id: string, name: string, description: string, code: string, postedBy: string, tags: string[]) => {
+        const updatedTune = await updateTune(id, name, description, code, postedBy, tags);
+        if (updatedTune) {
+            setResults(results.map(tune => (tune.id === id ? updatedTune : tune)));
+        }
+    };
+
+    const handleDeleteTune = async (id: string) => {
+        const success = await deleteTune(id);
+        if (success) {
+            setResults(results.filter(tune => tune.id !== id));
         }
     };
 
@@ -59,13 +77,14 @@ export const useTunes = () => {
     };
 
     return {
-        results,
         filteredResults,
         availableTags,
         selectedTune,
         isModalOpen,
         filterTunes,
         handleAddTune,
+        handleUpdateTune,
+        handleDeleteTune,
         handleSelectTune,
         handleCloseModal,
     };

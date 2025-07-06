@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description: "A Filthy App",
 };
 
+// Layout principal de l'application Next.js avec la barre de navigation et le pied de page
 export default function RootLayout({
   children,
 }: Readonly<{

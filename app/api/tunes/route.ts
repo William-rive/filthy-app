@@ -40,10 +40,20 @@ export async function GET(req: NextRequest) {
     }
 }
 
-export async function POST(req: NextRequest) {
-    const { name, description, code, postedBy, tags } = await req.json();
+export async function POST(request: Request) {
+    const { name, description, code, postedBy, tags } = await request.json();
 
     try {
+        // Transformer les tags (si nécessaire) pour correspondre à la logique backend
+        const transformedTags = tags.map((tag: string) => ({
+            tag: {
+                connectOrCreate: {
+                    where: { name: tag },
+                    create: { name: tag },
+                },
+            },
+        }));
+
         const tune = await prisma.tune.create({
             data: {
                 name,
@@ -51,14 +61,7 @@ export async function POST(req: NextRequest) {
                 code,
                 postedBy,
                 tags: {
-                    create: tags.map((tag: string) => ({
-                        tag: {
-                            connectOrCreate: {
-                                where: { name: tag },
-                                create: { name: tag },
-                            },
-                        },
-                    })),
+                    create: transformedTags, // Utilisation de la transformation
                 },
             },
             include: {

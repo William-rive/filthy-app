@@ -1,9 +1,11 @@
 import React from 'react';
 
+// Interface pour les props du composant ScrollToTopButton
 interface ScrollToTopButtonProps {
     show: boolean;
 }
 
+// Composant ScrollToTopButton pour remonter en haut de la page
 const ScrollToTopButton: React.FC<ScrollToTopButtonProps> = ({ show }) => {
     if (!show) return null;
 

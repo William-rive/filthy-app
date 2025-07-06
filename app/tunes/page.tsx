@@ -21,6 +21,8 @@ const TunesPage: React.FC = () => {
         isModalOpen,
         filterTunes,
         handleAddTune,
+        handleUpdateTune,
+        handleDeleteTune,
         handleSelectTune,
         handleCloseModal,
     } = useTunes();
@@ -37,12 +39,11 @@ const TunesPage: React.FC = () => {
 
     useEffect(() => {
         filterTunes(tags);
-    }, [filterTunes, tags]);
+    }, [tags, filterTunes]);
 
     return (
         <div className='pt-24 bg-white'>
-            <h1 className="text-2xl font-bold mb-4">Welcome to the Tunes Page</h1>
-            <p className="mb-4">This is a simple page for displaying and adding tunes.</p>
+            <h1 className="text-3xl font-bold mb-4 flex justify-center m-4">Welcome to the Tunes Page</h1>
             
             <SearchBar
                 query={query}
@@ -69,7 +70,14 @@ const TunesPage: React.FC = () => {
 
             <TuneList tunes={filteredResults} onSelect={handleSelectTune} />
 
-            <TuneModal isOpen={isModalOpen} onClose={handleCloseModal} tune={selectedTune} />
+            <TuneModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                tune={selectedTune}
+                onUpdateTune={handleUpdateTune}
+                onDeleteTune={handleDeleteTune}
+                
+                />
         </div>
     );
 };

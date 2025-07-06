@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Tag } from '../../models/TagModel';
 
+// MultiSelect composant pour sélectionner plusieurs options
 export const MultiSelect: React.FC<{
     options: Tag[];
     selectedOptions: string[];

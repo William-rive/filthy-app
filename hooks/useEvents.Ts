@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { fetchEvents, addEvent } from '../controller/HomeController';
 import { Event } from '../models/EventModel';
 
+// Custom hook pour gérer les événements
 export const useEvents = () => {
     const [events, setEvents] = useState<Event[]>([]);
 

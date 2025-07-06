@@ -1,11 +1,13 @@
 import React, { useRef } from 'react';
 
+// Interface pour les props du composant Modal
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     children: React.ReactNode;
 }
 
+// Composant Modal pour afficher un contenu modale
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
     const modalRef = useRef<HTMLDivElement>(null);
 

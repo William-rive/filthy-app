@@ -1,5 +1,6 @@
 import { Event } from '../models/EventModel';
 
+// Récupération des événements
 export const fetchEvents = async (): Promise<Event[]> => {
     try {
         const response = await fetch('/api/events');
@@ -15,6 +16,7 @@ export const fetchEvents = async (): Promise<Event[]> => {
     }
 };
 
+// Ajout d'un événement
 export const addEvent = async (title: string, description: string, date: string, location: string): Promise<Event | null> => {
     try {
         const response = await fetch('/api/events', {

@@ -1,3 +1,4 @@
+// Structure d'un modèle d'événement
 export interface Event {
     id: number;
     title: string;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+// Custom hook pour gérer le scroll de la page
 export const useScroll = () => {
     const [showScroll, setShowScroll] = useState(false);
 

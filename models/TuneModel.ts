@@ -1,5 +1,6 @@
 import { Tag } from './TagModel';
 
+// Modèle pour les tunes
 export interface Tune {
     id: string;
     name: string;
@@ -11,6 +12,7 @@ export interface Tune {
     tags: TuneTag[];
 }
 
+// Modèle pour les tags associés aux tunes
 export interface TuneTag {
     tuneId: string;
     tagId: string;

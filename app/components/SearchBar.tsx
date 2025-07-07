@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ query, setQuery, tags, setTags, a
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search for tunes..."
+                placeholder="Search..."
                 className="px-4 py-2 border rounded w-full mb-4"
             />
             <MultiSelect

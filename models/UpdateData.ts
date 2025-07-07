@@ -3,6 +3,7 @@ export type UpdateData = {
     name?: string;
     description?: string;
     code?: string;
+    image?: string;
     postedBy?: string;
     tags?: {
         deleteMany: object;

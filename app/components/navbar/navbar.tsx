@@ -25,10 +25,7 @@ export default async function NavBar() {
                             Liveries
                         </Link>
                         <Link href="/services" className="text-white">
-                            Services
-                        </Link>
-                        <Link href="/blog" className="text-white">
-                            Blog
+                            Recruitement
                         </Link>
                         <Link href="/contact" className="text-white">
                             Contact

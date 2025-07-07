@@ -100,9 +100,10 @@ model Tune {
 }
 
 model Tag {
-  id    String   @id @default(uuid())
-  name  String   @unique
+  id    String      @id @default(uuid())
+  name  String      @unique
   tunes TuneTag[]
+  liveries LiveryTag[]
 }
 
 model TuneTag {
@@ -112,4 +113,24 @@ model TuneTag {
   tag    Tag    @relation(fields: [tagId], references: [id])
 
   @@id([tuneId, tagId])
+}
+
+model Livery {
+  id          String      @id @default(uuid())
+  name        String
+  description String
+  image       String
+  createdAt   DateTime    @default(now())
+  postedBy    String
+  updatedAt   DateTime    @updatedAt
+  tags        LiveryTag[]
+}
+
+model LiveryTag {
+  liveryId String
+  tagId    String
+  livery   Livery @relation(fields: [liveryId], references: [id])
+  tag      Tag    @relation(fields: [tagId], references: [id])
+
+  @@id([liveryId, tagId])
 }

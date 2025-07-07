@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useDebouncedSearch } from '../../hooks/useDebouncerSearch';
 import SearchBar from '../components/SearchBar';
 import TuneForm from '../components/tunes/TuneForm';
 import TuneList from '../components/tunes/TuneList';
@@ -8,12 +7,14 @@ import TuneModal from '../components/tunes/TuneModal';
 import { useTunes } from '../../hooks/useTunes';
 
 const TunesPage: React.FC = () => {
-    const { query, setQuery } = useDebouncedSearch();
+
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [code, setCode] = useState('');
     const [postedBy, setPostedBy] = useState('');
     const [tags, setTags] = useState<string[]>([]);
+    const [query, setQuery] = useState("");
+
     const {
         filteredResults,
         availableTags,
@@ -27,6 +28,11 @@ const TunesPage: React.FC = () => {
         handleCloseModal,
     } = useTunes();
 
+    //Appelle la fonction filterTunes à chaque fois que query ou tags changent
+    useEffect(() => {
+        filterTunes(query, tags);
+    }, [query, tags, filterTunes]);
+
     const handleAddTuneWrapper = async (e: React.FormEvent) => {
         e.preventDefault();
         await handleAddTune(name, description, code, postedBy, tags);
@@ -36,10 +42,6 @@ const TunesPage: React.FC = () => {
         setPostedBy('');
         setTags([]);
     };
-
-    useEffect(() => {
-        filterTunes(tags);
-    }, [tags, filterTunes]);
 
     return (
         <div className='pt-24 bg-white'>
@@ -76,8 +78,7 @@ const TunesPage: React.FC = () => {
                 tune={selectedTune}
                 onUpdateTune={handleUpdateTune}
                 onDeleteTune={handleDeleteTune}
-                
-                />
+            />
         </div>
     );
 };

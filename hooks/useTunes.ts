@@ -25,20 +25,31 @@ export const useTunes = () => {
         loadTunes();
         loadTags();
     }, []);
+    const filterTunes = useCallback(
+        (query: string = "", tags: string[] = [] ) => {
+        let filtered = results;
+        const safeQuery = typeof query === "string" ? query : "";
 
-    const filterTunes = useCallback((tags: string[]) => {
-        if (tags.length === 0) {
-            setFilteredResults(results);
-        } else {
-            const filtered = results.filter(tune =>
+        // Filter by query (name or description, case-insensitive)
+        if (safeQuery.trim() !== "") {
+            const lowerQuery = query.toLowerCase();
+            filtered = filtered.filter(
+                tune =>
+                    tune.name.toLowerCase().includes(lowerQuery) ||
+                    tune.description.toLowerCase().includes(lowerQuery)
+            );
+        }
+
+        if (tags.length > 0) {
+            filtered = filtered.filter(tune =>
                 tune.tags.some(tuneTag => tags.includes(tuneTag.tag.name))
             );
-    
-            if (filtered.length !== filteredResults.length || !filtered.every((tune, index) => tune.id === filteredResults[index]?.id)) {
-                setFilteredResults(filtered);
-            }
         }
-    }, [results, filteredResults]);  // Ajoute les dépendances nécessaires
+
+        setFilteredResults(filtered);
+    },
+    [results]
+);// Ajoute les dépendances nécessaires
 
     const handleAddTune = async (name: string, description: string, code: string, postedBy: string, tags: string[]) => {
         const newTune = await addTune(name, description, code, postedBy, tags);

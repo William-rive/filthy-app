@@ -4,9 +4,9 @@ import { UpdateData } from '@/models/UpdateData';
 
 const prisma = new PrismaClient();
 
-export async function GET(request: Request, context: { params: { id: string } }) {
-    const { params } = context;
-    const { id } = await params;
+export async function GET(request: Request) {
+    const url = new URL(request.url);
+    const id = url.pathname.split('/').pop();
 
     try {
         const livery = await prisma.livery.findUnique({

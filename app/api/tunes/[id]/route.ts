@@ -4,9 +4,11 @@ import { UpdateData } from '@/models/UpdateData';
 
 const prisma = new PrismaClient();
 
-export async function GET(request: Request, context: { params: { id: string } }) {
-    const { params } = context; // Access `params` from `context`
-    const { id } = await params; // Await `params` to access its properties
+export async function GET(
+    request: Request,
+  { params }: { params: { id: string }}
+) {
+    const { id } = params;
 
     try {
         const tune = await prisma.tune.findUnique({
@@ -31,9 +33,11 @@ export async function GET(request: Request, context: { params: { id: string } })
     }
 }
 
-export async function PATCH(request: Request, context: { params: { id: string } }) {
-    const { params } = context; // Access `params` from `context`
-    const { id } = await params; // Await `params` to access its properties
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+    const { id } = params;
 
     try {
         const payload = await request.json();
@@ -95,7 +99,10 @@ export async function PATCH(request: Request, context: { params: { id: string } 
     }
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
     const { id } = params;
 
     try {

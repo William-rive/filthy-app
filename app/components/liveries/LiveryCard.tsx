@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { Livery } from '../../../models/LiveryModel';
 
 interface LiveryCardProps {
@@ -13,9 +14,17 @@ const LiveryCard: React.FC<LiveryCardProps> = ({ livery, onSelect }) => {
         <div className="p-4 border rounded shadow-lg cursor-pointer" onClick={() => onSelect(livery.id)}>
             <div className="flex-1">
                 <h2 className="text-xl font-bold">{livery.name}</h2>
-                <p>{livery.description}</p>
                 {livery.image && (
-                    <img src={livery.image} alt={livery.name} className="my-2 w-full h-40 object-cover rounded" />
+                    <div className="my-2 w-full h-40 relative rounded overflow-hidden">
+                        <Image
+                            src={livery.image}
+                            alt={livery.name}
+                            layout="fill"
+                            objectFit="cover"
+                            className="rounded"
+                            priority
+                        />
+                    </div>
                 )}
                 <p>Last updated: {new Date(livery.updatedAt).toLocaleDateString()}</p>
             </div>

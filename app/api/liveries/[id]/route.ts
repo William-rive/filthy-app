@@ -96,8 +96,7 @@ export async function PATCH(request: Request, context: { params: { id: string } 
 }
 
 export async function DELETE(request: Request, context: { params: { id: string } }) {
-    const { params } = context;
-    const id = await params.id;
+    const { id } = context.params;
 
     try {
         await prisma.livery.delete({

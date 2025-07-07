@@ -44,7 +44,6 @@ export async function POST(request: Request) {
     const { name, description, code, postedBy, tags } = await request.json();
 
     try {
-        // Transformer les tags (si nécessaire) pour correspondre à la logique backend
         const transformedTags = tags.map((tag: string) => ({
             tag: {
                 connectOrCreate: {
@@ -61,7 +60,7 @@ export async function POST(request: Request) {
                 code,
                 postedBy,
                 tags: {
-                    create: transformedTags, // Utilisation de la transformation
+                    create: transformedTags,
                 },
             },
             include: {

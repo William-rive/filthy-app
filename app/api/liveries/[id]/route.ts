@@ -31,9 +31,8 @@ export async function GET(request: Request) {
     }
 }
 
-export async function PATCH(request: Request, context: { params: { id: string } }) {
-    const { params } = context;
-    const { id } = await params;
+export async function PATCH(request: Request,{ params }: { params: { id: string } }) {
+  const { id } = params;
 
     try {
         const payload = await request.json();
@@ -95,8 +94,8 @@ export async function PATCH(request: Request, context: { params: { id: string } 
     }
 }
 
-export async function DELETE(request: Request, context: { params: { id: string } }) {
-    const { id } = context.params;
+export async function DELETE(request: Request,{ params }: { params: { id: string } }) {
+  const { id } = params;
 
     try {
         await prisma.livery.delete({

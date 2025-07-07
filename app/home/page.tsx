@@ -9,6 +9,7 @@ import ScrollToTopButton from '../components/ScrollToTopButton';
 import { useScroll } from '../../hooks/useScroll';
 import { useEvents } from '../../hooks/useEvents';
 
+// Composant pour la page d'accueil
 const HomePage: React.FC = () => {
     const { events, handleAddEvent } = useEvents();
     const showScroll = useScroll();

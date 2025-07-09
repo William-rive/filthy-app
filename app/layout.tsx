@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavBar from "./components/navbar/navbar";
 import Footer from "./components/footer/footer";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Filthy App",
@@ -17,9 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-      <NavBar />
-        {children}
-      <Footer />
+        <SessionProvider>
+          <NavBar />
+          {children}
+          <Footer />
+        </SessionProvider>
       </body>
     </html>
   );

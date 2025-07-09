@@ -1,12 +1,12 @@
+"use client";
 import Link from 'next/link';
 import Image from 'next/image';
 import { LoginButton, LogoutButton } from "./AuthButtons";
-import { auth } from '@/auth/authSetup';
+import { useSession } from "next-auth/react";
 
-export default async function NavBar() {
-
-    const session = await auth();
-    
+export default function NavBar() {
+    const { data: session } = useSession();
+    const user = session?.user ?? null;
     return (
         <nav className="bg-gray-900 fixed top-0 left-0 right-0 z-50">
             <div className='flex items-center justify-between px-6 py-4 '>
@@ -31,7 +31,8 @@ export default async function NavBar() {
                             Contact
                         </Link>
                         <div className='text-white'>
-                        {!session?.user ? <LoginButton /> : <LogoutButton />}
+                            {/* Affiche LoginButton si pas d'utilisateur, sinon LogoutButton */}
+                            {!user ? <LoginButton /> : <LogoutButton />}
                         </div>
                     </div>
                 </div>

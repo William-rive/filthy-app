@@ -8,5 +8,5 @@ import Google from "next-auth/providers/google";
 export const { auth, handlers, signIn, signOut } = NextAuth ({
     adapter :  PrismaAdapter(prisma),
     providers: [GitHubProvider, Google],
-    redirectProxyUrl: process.env.NEXT_PUBLIC_BASE_URL,
+    redirectProxyUrl: process.env.NEXT_AUTH_BASE_URL,
 })

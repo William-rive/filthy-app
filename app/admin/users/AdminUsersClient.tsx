@@ -1,6 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import type { User } from "@prisma/client";
 
 export default function AdminUsersClient({ users }: { users: User[] }) {
@@ -8,6 +9,8 @@ export default function AdminUsersClient({ users }: { users: User[] }) {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const { data: session } = useSession();
+  const currentUser = session?.user as { role?: string } | undefined;
 
   async function handleRoleChange(userId: string, newRole: string) {
     setError(null);
@@ -58,22 +61,24 @@ export default function AdminUsersClient({ users }: { users: User[] }) {
               <td className="p-2">{user.email}</td>
               <td className="p-2 font-mono">{user.role}</td>
               <td className="p-2">
-                {user.role === "user" ? (
-                  <button
-                    className="px-2 py-1 bg-yellow-400 rounded text-black hover:bg-yellow-500"
-                    disabled={pending}
-                    onClick={() => handleRoleChange(user.id, "admin")}
-                  >
-                    Promouvoir admin
-                  </button>
-                ) : (
-                  <button
-                    className="px-2 py-1 bg-gray-300 rounded text-black hover:bg-gray-400"
-                    disabled={pending}
-                    onClick={() => handleRoleChange(user.id, "user")}
-                  >
-                    Rétrograder user
-                  </button>
+                {currentUser?.role === "admin" && (
+                  user.role === "user" ? (
+                    <button
+                      className="px-2 py-1 bg-yellow-400 rounded text-black hover:bg-yellow-500"
+                      disabled={pending}
+                      onClick={() => handleRoleChange(user.id, "admin")}
+                    >
+                      Promouvoir admin
+                    </button>
+                  ) : (
+                    <button
+                      className="px-2 py-1 bg-gray-300 rounded text-black hover:bg-gray-400"
+                      disabled={pending}
+                      onClick={() => handleRoleChange(user.id, "user")}
+                    >
+                      Rétrograder user
+                    </button>
+                  )
                 )}
               </td>
             </tr>

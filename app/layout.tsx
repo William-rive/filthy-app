@@ -3,6 +3,7 @@ import "./globals.css";
 import NavBar from "./components/navbar/navbar";
 import Footer from "./components/footer/footer";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Filthy App",
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="pt-20">
         <SessionProvider>
+          <Toaster position="top-center" />
           <NavBar />
           {children}
           <Footer />

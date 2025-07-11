@@ -5,6 +5,7 @@ import TuneForm from '../components/tunes/TuneForm';
 import TuneList from '../components/tunes/TuneList';
 import TuneModal from '../components/tunes/TuneModal';
 import { useTunes } from '../../hooks/useTunes';
+import { useSession } from "next-auth/react";
 
 const TunesPage: React.FC = () => {
 
@@ -27,6 +28,9 @@ const TunesPage: React.FC = () => {
         handleSelectTune,
         handleCloseModal,
     } = useTunes();
+
+    const { data: session } = useSession();
+    const isAuthenticated = !!session?.user;
 
     //Appelle la fonction filterTunes à chaque fois que query ou tags changent
     useEffect(() => {
@@ -55,20 +59,25 @@ const TunesPage: React.FC = () => {
                 availableTags={availableTags}
             />
 
-            <TuneForm
-                name={name}
-                setName={setName}
-                description={description}
-                setDescription={setDescription}
-                code={code}
-                setCode={setCode}
-                postedBy={postedBy}
-                setPostedBy={setPostedBy}
-                tags={tags}
-                setTags={setTags}
-                availableTags={availableTags}
-                handleAddTune={handleAddTuneWrapper}
-            />
+            {isAuthenticated && (
+                <TuneForm
+                    name={name}
+                    setName={setName}
+                    description={description}
+                    setDescription={setDescription}
+                    code={code}
+                    setCode={setCode}
+                    postedBy={postedBy}
+                    setPostedBy={setPostedBy}
+                    tags={tags}
+                    setTags={setTags}
+                    availableTags={availableTags}
+                    handleAddTune={handleAddTuneWrapper}
+                />
+            )}
+            {!isAuthenticated && (
+                <div className="text-center text-gray-500 my-4">Connectez-vous pour ajouter un tune.</div>
+            )}
 
             <TuneList tunes={filteredResults} onSelect={handleSelectTune} />
 

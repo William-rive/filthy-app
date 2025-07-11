@@ -6,6 +6,7 @@ import type { User } from "@prisma/client";
 export default function AdminUsersClient({ users }: { users: User[] }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
   const router = useRouter();
 
   async function handleRoleChange(userId: string, newRole: string) {
@@ -25,49 +26,69 @@ export default function AdminUsersClient({ users }: { users: User[] }) {
     });
   }
 
+  // Filtrage des utilisateurs selon la recherche
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name?.toLowerCase().includes(search.toLowerCase()) ||
+      user.email?.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <table className="w-full border mt-6">
-      <thead>
-        <tr className="bg-gray-200">
-          <th className="p-2">Nom</th>
-          <th className="p-2">Email</th>
-          <th className="p-2">Rôle</th>
-          <th className="p-2">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {users.map((user) => (
-          <tr key={user.id} className="border-t">
-            <td className="p-2">{user.name}</td>
-            <td className="p-2">{user.email}</td>
-            <td className="p-2 font-mono">{user.role}</td>
-            <td className="p-2">
-              {user.role === "user" ? (
-                <button
-                  className="px-2 py-1 bg-yellow-400 rounded text-black hover:bg-yellow-500"
-                  disabled={pending}
-                  onClick={() => handleRoleChange(user.id, "admin")}
-                >
-                  Promouvoir admin
-                </button>
-              ) : (
-                <button
-                  className="px-2 py-1 bg-gray-300 rounded text-black hover:bg-gray-400"
-                  disabled={pending}
-                  onClick={() => handleRoleChange(user.id, "user")}
-                >
-                  Rétrograder user
-                </button>
-              )}
-            </td>
+    <div>
+      <input
+        type="text"
+        placeholder="Rechercher par nom ou email..."
+        className="mb-4 p-2 border rounded w-full max-w-xs"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      <table className="w-full border mt-2">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="p-2">Nom</th>
+            <th className="p-2">Email</th>
+            <th className="p-2">Rôle</th>
+            <th className="p-2">Action</th>
           </tr>
-        ))}
-      </tbody>
-      {error && (
-        <tfoot>
-          <tr><td colSpan={4} className="text-red-600 p-2">{error}</td></tr>
-        </tfoot>
-      )}
-    </table>
+        </thead>
+        <tbody>
+          {filteredUsers.map((user) => (
+            <tr key={user.id} className="border-t">
+              <td className="p-2">{user.name}</td>
+              <td className="p-2">{user.email}</td>
+              <td className="p-2 font-mono">{user.role}</td>
+              <td className="p-2">
+                {user.role === "user" ? (
+                  <button
+                    className="px-2 py-1 bg-yellow-400 rounded text-black hover:bg-yellow-500"
+                    disabled={pending}
+                    onClick={() => handleRoleChange(user.id, "admin")}
+                  >
+                    Promouvoir admin
+                  </button>
+                ) : (
+                  <button
+                    className="px-2 py-1 bg-gray-300 rounded text-black hover:bg-gray-400"
+                    disabled={pending}
+                    onClick={() => handleRoleChange(user.id, "user")}
+                  >
+                    Rétrograder user
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+        {error && (
+          <tfoot>
+            <tr>
+              <td colSpan={4} className="text-red-600 p-2">
+                {error}
+              </td>
+            </tr>
+          </tfoot>
+        )}
+      </table>
+    </div>
   );
 }

@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { UpdateData } from '@/models/UpdateData';
+import NextAuth from 'next-auth';
+import { authOptions } from '@/auth/authSetup';
 
 const prisma = new PrismaClient();
 
 export async function GET(
     request: Request,
-  { params }: { params: { id: string }}
+  { params }: { params: { id: string } }
 ) {
-    const { id } = params;
+    const { id } = await params;
 
     try {
         const tune = await prisma.tune.findUnique({
@@ -37,7 +39,15 @@ export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-    const { id } = params;
+    const { id } = await params;
+
+    // Vérification admin
+    const { auth } = NextAuth(authOptions);
+    const session = await auth();
+    const user = session?.user as { role?: string } | undefined;
+    if (!user || user.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     try {
         const payload = await request.json();
@@ -103,7 +113,15 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-    const { id } = params;
+    const { id } = await params;
+
+    // Vérification admin
+    const { auth } = NextAuth(authOptions);
+    const session = await auth();
+    const user = session?.user as { role?: string } | undefined;
+    if (!user || user.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     try {
         await prisma.tune.delete({

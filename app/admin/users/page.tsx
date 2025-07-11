@@ -1,15 +1,16 @@
-import getServerSession from "next-auth";
 import { authOptions } from "../../../auth/authSetup";
 import { prisma } from "../../../src/lib/prisma";
 import { redirect } from "next/navigation";
 import AdminUsersClient from "./AdminUsersClient";
 import { User } from "@prisma/client";
+import NextAuth from "next-auth";
 
 export default async function AdminUsersPage() {
-  // Sécurité admin
-  const session = await getServerSession(authOptions);
-  const role = (session as { user?: { role?: string } })?.user?.role;
-  if (!role || role !== "admin") {
+  // Utilisation de la fonction auth() pour NextAuth v5
+  const { auth } = NextAuth(authOptions);
+  const session = await auth();
+  const user = session?.user as (User & { role: string }) | undefined;
+  if (!user || user.role !== "admin") {
     redirect("/");
   }
 

@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../src/lib/prisma";
-import getServerSession from "next-auth";
+import NextAuth from "next-auth";
 import { authOptions } from "../../../../auth/authSetup";
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  const role = (session as { user?: { role?: string } })?.user?.role;
-  if (!role || role !== "admin") {
+  // Utilisation de la fonction auth() pour NextAuth v5
+  const { auth } = NextAuth(authOptions);
+  const session = await auth();
+  const user = session?.user as { role?: string } | undefined;
+  if (!user || user.role !== "admin") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -3,17 +3,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { LoginButton, LogoutButton } from "./AuthButtons";
 import { useSession } from "next-auth/react";
+import type { User } from "@prisma/client";
 
-type UserWithRole = {
-  role?: string;
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-};
+// On étend le type User de Prisma pour le client (car NextAuth peut renvoyer un user partiel)
+type UserClient = Partial<User> & { role?: string };
 
 export default function NavBar() {
+    console.log("NAVBAR MOUNTED");
     const { data: session } = useSession();
-    const user = session?.user as UserWithRole ?? null;
+    const user = session?.user as UserClient ?? null;
     return (
         <nav className="bg-gray-900 fixed top-0 left-0 right-0 z-50">
             <div className='flex items-center justify-between px-6 py-4 '>

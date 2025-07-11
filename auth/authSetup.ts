@@ -12,7 +12,7 @@ export const authOptions = {
     callbacks: {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async session({ session, token }: any) {
-            if (session.user && token.role) {
+            if (session.user && token && token.role) {
                 session.user.role = token.role;
             }
             return session;
@@ -27,6 +27,4 @@ export const authOptions = {
     },
 };
 
-// Export des handlers et helpers
 export const { handlers, signIn, signOut } = NextAuth(authOptions);
-export { default as getServerSession } from "next-auth";

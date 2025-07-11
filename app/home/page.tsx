@@ -56,7 +56,7 @@ const HomePage: React.FC = () => {
     };
 
     return (
-        <section className='bg-slate-800 flex flex-col justify-center pt-24'>
+        <section className='bg-slate-800 flex flex-col justify-center'>
             <Header />
             <EventsSection
                 events={events}

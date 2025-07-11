@@ -1,5 +1,4 @@
 import NextAuth from "next-auth";
-import auth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "../src/lib/prisma";
 import GitHubProvider from "next-auth/providers/github";
@@ -10,11 +9,24 @@ export const authOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [GitHubProvider, GoogleProvider],
     redirectProxyUrl: process.env.NEXTAUTH_URL,
+    callbacks: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        async session({ session, token }: any) {
+            if (session.user && token.role) {
+                session.user.role = token.role;
+            }
+            return session;
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        async jwt({ token, user }: any) { 
+            if (user) {
+                token.role = user.role;
+            }
+            return token;
+        },
+    },
 };
 
 // Export des handlers et helpers
 export const { handlers, signIn, signOut } = NextAuth(authOptions);
-export { auth }; // Ré-export de 'auth' pour compatibilité avec les Server Components
-
-// Pour les Server Components :
 export { default as getServerSession } from "next-auth";

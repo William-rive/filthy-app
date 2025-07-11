@@ -4,9 +4,16 @@ import Image from 'next/image';
 import { LoginButton, LogoutButton } from "./AuthButtons";
 import { useSession } from "next-auth/react";
 
+type UserWithRole = {
+  role?: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+};
+
 export default function NavBar() {
     const { data: session } = useSession();
-    const user = session?.user ?? null;
+    const user = session?.user as UserWithRole ?? null;
     return (
         <nav className="bg-gray-900 fixed top-0 left-0 right-0 z-50">
             <div className='flex items-center justify-between px-6 py-4 '>
@@ -30,6 +37,12 @@ export default function NavBar() {
                         <Link href="/contact" className="text-white">
                             Contact
                         </Link>
+                        {/* Lien Admin visible uniquement pour les admins */}
+                        {user?.role === "admin" && (
+                            <Link href="/admin" className="text-yellow-400 font-semibold">
+                                Admin
+                            </Link>
+                        )}
                         <div className='text-white'>
                             {/* Affiche LoginButton si pas d'utilisateur, sinon LogoutButton */}
                             {!user ? <LoginButton /> : <LogoutButton />}

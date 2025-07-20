@@ -3,6 +3,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import type { User } from "@prisma/client";
+import { toast } from "react-hot-toast";
 
 export default function AdminUsersClient({ users }: { users: User[] }) {
   const [pending, startTransition] = useTransition();
@@ -15,15 +16,27 @@ export default function AdminUsersClient({ users }: { users: User[] }) {
   async function handleRoleChange(userId: string, newRole: string) {
     setError(null);
     startTransition(async () => {
-      const res = await fetch("/admin/users", {
-        method: "POST",
+      console.log("handleRoleChange", { userId, newRole });
+      const res = await fetch("/api/admin/users", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, newRole }),
       });
+      let apiResponse = null;
+      try {
+        apiResponse = await res.json();
+      } catch {
+        apiResponse = null;
+      }
+      console.log("API response:", apiResponse);
       if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "Erreur lors du changement de rôle");
+        setError(apiResponse?.error || "Erreur lors du changement de rôle");
       } else {
+        toast.success(
+          newRole === "admin"
+            ? "Utilisateur promu admin avec succès !"
+            : "Utilisateur rétrogradé user avec succès !"
+        );
         router.refresh();
       }
     });

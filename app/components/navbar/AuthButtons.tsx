@@ -12,8 +12,10 @@ export const LoginButton = () => {
 
 export const LogoutButton = () => {
     return (
-        <button onClick={() => signOut()}>
-            Logout
-        </button>
+        <div className="cursor-pointer block px-4 py-2 text-gray-800 hover:bg-gray-200">
+            <button onClick={() => signOut()}>
+                Logout
+            </button>
+        </div>
     );
 }

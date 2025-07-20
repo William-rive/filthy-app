@@ -45,7 +45,7 @@ const HomePage: React.FC = () => {
             try {
                 await handleDeleteEvent(deleteConfirmId);
                 toast.success('Événement supprimé avec succès !');
-            } catch (err) {
+            } catch {
                 toast.error("Erreur lors de la suppression de l'événement");
             }
             setDeleteConfirmId(null);

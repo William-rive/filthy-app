@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSession } from "next-auth/react";
 import { Tag } from '../../../models/TagModel';
 import { MultiSelect } from '../MultiSelect';
 
@@ -31,6 +32,13 @@ const TuneForm: React.FC<TuneFormProps> = ({
     availableTags,
     handleAddTune,
 }) => {
+    const { data: session } = useSession();
+    React.useEffect(() => {
+        if (session?.user?.name) {
+            setPostedBy(session.user.name);
+        }
+    }, [session?.user?.name, setPostedBy]);
+
     return (
         <form onSubmit={handleAddTune} className="mb-4">
             <input
@@ -54,13 +62,8 @@ const TuneForm: React.FC<TuneFormProps> = ({
                 placeholder="Code"
                 className="px-4 py-2 border rounded w-full mb-2"
             />
-            <input
-                type="text"
-                value={postedBy}
-                onChange={(e) => setPostedBy(e.target.value)}
-                placeholder="Posted by"
-                className="px-4 py-2 border rounded w-full mb-2"
-            />
+            {/* postedBy est masqué dans l'UI mais transmis lors de la création */}
+            <input type="hidden" value={postedBy} readOnly />
             <MultiSelect
                 options={availableTags}
                 selectedOptions={tags}

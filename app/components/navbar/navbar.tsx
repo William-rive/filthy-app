@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { LoginButton, LogoutButton } from "./AuthButtons";
 import { useSession } from "next-auth/react";
 import type { User } from "@prisma/client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // On étend le type User de Prisma pour le client (car NextAuth peut renvoyer un user partiel)
 type UserClient = Partial<User> & { role?: string };
@@ -13,6 +13,13 @@ export default function NavBar() {
     const { data: session } = useSession();
     const user = session?.user as UserClient ?? null;
     const [showProfileMenu, setShowProfileMenu] = useState(false);
+    useEffect(() => {
+        const handleRouteChange = () => setShowProfileMenu(false);
+        window.addEventListener('popstate', handleRouteChange);
+        return () => {
+            window.removeEventListener('popstate', handleRouteChange);
+        };
+    }, []);
 
     return (
         <nav className="bg-gray-900 fixed top-0 left-0 right-0 z-50">
@@ -62,8 +69,16 @@ export default function NavBar() {
                                 </button>
                                 {showProfileMenu && (
                                     <div className="absolute right-0 mt-2 w-48 bg-gray-100 rounded shadow-lg z-50">
-                                        <Link href="/profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Mon profil</Link>
-                                        <LogoutButton />
+                                        <Link
+                                            href="/profile"
+                                            className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                                            onClick={() => setShowProfileMenu(false)}
+                                        >
+                                            Mon profil
+                                        </Link>
+                                        <div onClick={() => setShowProfileMenu(false)}>
+                                            <LogoutButton />
+                                        </div>
                                     </div>
                                 )}
                             </div>

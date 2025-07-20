@@ -16,6 +16,17 @@ const TuneCard: React.FC<TuneCardProps> = ({ tune, onSelect }) => {
                 <h2 className="text-xl font-bold">{tune.name}</h2>
                 <p>{tune.description}</p>
                 <p>Last updated: {new Date(tune.updatedAt).toLocaleDateString()}</p>
+                {/* Affiche le nom de l'utilisateur qui a posté le tune */}
+                <p className="mt-2 text-sm text-gray-600">
+                    Posté par :
+                    <a
+                        href={`/profile/${encodeURIComponent(tune.postedBy)}`}
+                        className="text-blue-600 hover:underline ml-1"
+                        onClick={e => { e.stopPropagation(); }}
+                    >
+                        {tune.postedBy}
+                    </a>
+                </p>
             </div>
             <div className="flex flex-wrap mt-2">
             {tags.length > 0 ? (

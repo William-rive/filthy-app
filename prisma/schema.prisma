@@ -19,6 +19,7 @@ model User {
   accounts      Account[]
   Authenticator Authenticator[]
   sessions      Session[]
+  posts         Post[]
 }
 
 model Account {
@@ -91,6 +92,7 @@ model Tune {
   postedBy    String
   updatedAt   DateTime  @updatedAt
   tags        TuneTag[]
+  posts       Post[]    @relation("TunePosts")
 }
 
 model Tag {
@@ -118,6 +120,7 @@ model Livery {
   postedBy    String
   updatedAt   DateTime    @updatedAt
   tags        LiveryTag[]
+  posts       Post[]      @relation("LiveryPosts")
 }
 
 model LiveryTag {
@@ -127,4 +130,17 @@ model LiveryTag {
   tag      Tag    @relation(fields: [tagId], references: [id])
 
   @@id([liveryId, tagId])
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String   // "tune" ou "livery"
+  tuneId    String?  // si type = "tune"
+  liveryId  String?  // si type = "livery"
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  tune      Tune?    @relation("TunePosts", fields: [tuneId], references: [id])
+  livery    Livery?  @relation("LiveryPosts", fields: [liveryId], references: [id])
 }

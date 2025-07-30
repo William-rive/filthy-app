@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/src/lib/prisma';
 
 // Créer un événement
 export const createEvent = async (title: string, description: string, date: Date, location: string) => {

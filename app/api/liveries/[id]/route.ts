@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/src/lib/prisma';
 import { UpdateData } from '@/models/UpdateData';
 import NextAuth from 'next-auth';
 import { authOptions } from '@/auth/authSetup';
 
-const prisma = new PrismaClient();
 
 export async function GET(
   request: Request,
@@ -124,9 +123,10 @@ export async function DELETE(
     }
 
     try {
-        await prisma.livery.delete({
-            where: { id },
-        });
+        // Supprime d'abord les LiveryTag associés
+        await prisma.liveryTag.deleteMany({ where: { liveryId: id } });
+        // Supprime ensuite la livery
+        await prisma.livery.delete({ where: { id } });
 
         return NextResponse.json({ message: 'Livery deleted successfully' });
     } catch (error) {

@@ -1,10 +1,26 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditNameForm from "./EditNameForm";
 import { User } from "@prisma/client";
 
+interface Post {
+  id: string;
+  type: string;
+  tune?: { name: string };
+  livery?: { name: string };
+}
+
 export default function ProfilePageClient({ user }: { user: User & { role: string } }) {
   const [editMode, setEditMode] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    // Récupère les posts de l'utilisateur
+    fetch(`/api/posts?userId=${user.id}`)
+      .then(res => res.json())
+      .then(data => setPosts(data));
+  }, [user.id]);
+
   return (
     <main className="max-w-2xl mx-auto py-10">
       <h1 className="text-3xl font-bold mb-4">Mon profil</h1>
@@ -32,7 +48,22 @@ export default function ProfilePageClient({ user }: { user: User & { role: strin
       </div>
       <h2 className="text-2xl font-bold mb-2">Mes posts</h2>
       <div className="bg-white p-4 rounded shadow">
-        <p>Aucun post pour le moment.</p>
+        {posts.length === 0 ? (
+          <p>Aucun post pour le moment.</p>
+        ) : (
+          <ul>
+            {posts.map(post => (
+              <li key={post.id} className="mb-2">
+                {post.type === "tune" && post.tune && (
+                  <span><strong>Tune :</strong> {post.tune.name}</span>
+                )}
+                {post.type === "livery" && post.livery && (
+                  <span><strong>Livery :</strong> {post.livery.name}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </main>
   );

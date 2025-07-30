@@ -11,7 +11,6 @@ const LiveriesPage: React.FC = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [image, setImage] = useState('');
-    const [postedBy, setPostedBy] = useState('');
     const [tags, setTags] = useState<string[]>([]);
     const [query, setQuery] = useState("");
 
@@ -38,11 +37,10 @@ const LiveriesPage: React.FC = () => {
     // Handler pour ajouter une livery
     const handleAddLiveryWrapper = async (e: React.FormEvent) => {
         e.preventDefault();
-        await handleAddLivery(name, description, image, postedBy, tags);
+        await handleAddLivery(name, description, image, '', tags);
         setName('');
         setDescription('');
         setImage('');
-        setPostedBy('');
         setTags([]);
     };
 
@@ -64,11 +62,6 @@ const LiveriesPage: React.FC = () => {
                     setDescription={setDescription}
                     image={image}
                     setImage={setImage}
-                    postedBy={postedBy}
-                    setPostedBy={setPostedBy}
-                    tags={tags}
-                    setTags={setTags}
-                    availableTags={availableTags}
                     handleAddLivery={handleAddLiveryWrapper}
                 />
             )}

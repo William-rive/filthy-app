@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/src/lib/prisma';
 import { UpdateData } from '@/models/UpdateData';
 import NextAuth from 'next-auth';
 import { authOptions } from '@/auth/authSetup';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient(); // This line is removed
 
 export async function GET(
     request: Request,

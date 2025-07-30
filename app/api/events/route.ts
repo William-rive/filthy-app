@@ -1,10 +1,9 @@
 // /app/api/events/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/src/lib/prisma';
 import NextAuth from "next-auth";
 import { authOptions } from "@/auth/authSetup";
 
-const prisma = new PrismaClient();
 
 export async function GET() {
   try {

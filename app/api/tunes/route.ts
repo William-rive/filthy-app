@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/src/lib/prisma';
+import NextAuth from 'next-auth';
+import { authOptions } from '@/auth/authSetup';
 
-const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
@@ -40,8 +41,16 @@ export async function GET(req: NextRequest) {
     }
 }
 
-export async function POST(request: Request) {
-    const { name, description, code, postedBy, tags } = await request.json();
+export async function POST(request: NextRequest) {
+    const { auth } = NextAuth(authOptions);
+    const session = await auth();
+    const user = session?.user as { id?: string, name?: string } | undefined;
+    if (!user?.id) {
+        return NextResponse.json({ error: 'Unauthorized: no user session' }, { status: 401 });
+    }
+    const userId = user.id;
+    const userName = user.name || '';
+    const { name, description, code, tags } = await request.json();
 
     try {
         const transformedTags = tags.map((tag: string) => ({
@@ -58,7 +67,7 @@ export async function POST(request: Request) {
                 name,
                 description,
                 code,
-                postedBy,
+                postedBy: userName,
                 tags: {
                     create: transformedTags,
                 },
@@ -69,6 +78,13 @@ export async function POST(request: Request) {
                         tag: true,
                     },
                 },
+            },
+        });
+        await prisma.post.create({
+            data: {
+                userId,
+                type: 'tune',
+                tuneId: tune.id,
             },
         });
         return NextResponse.json(tune, { status: 201 });

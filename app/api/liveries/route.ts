@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/src/lib/prisma';
+import NextAuth from 'next-auth';
+import { authOptions } from '@/auth/authSetup';
 
-const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
@@ -40,8 +41,20 @@ export async function GET(req: NextRequest) {
     }
 }
 
-export async function POST(request: Request) {
-    const { name, description, image, postedBy, tags } = await request.json();
+
+export async function POST(request: NextRequest) {
+    const { name, description, image, tags } = await request.json();
+
+    // Récupère la session NextAuth côté serveur
+    const { auth } = NextAuth(authOptions);
+    const session = await auth();
+    const user = session?.user as { id?: string, name?: string } | undefined;
+    if (!user?.id) {
+        return NextResponse.json({ error: 'Unauthorized: no user session' }, { status: 401 });
+    }
+    const userId = user.id;
+    const userName = user.name || '';
+    console.log('userId in API:', userId, 'userName:', userName);
 
     try {
         const transformedTags = Array.isArray(tags)
@@ -60,7 +73,7 @@ export async function POST(request: Request) {
                 name,
                 description,
                 image,
-                postedBy,
+                postedBy: userName,
                 tags: {
                     create: transformedTags,
                 },

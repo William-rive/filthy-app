@@ -11,9 +11,10 @@ export const authOptions = {
     redirectProxyUrl: process.env.NEXTAUTH_URL,
     callbacks: {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        async session({ session, token }: any) {
-            if (session.user && token && token.role) {
-                session.user.role = token.role;
+        async session({ session, token, user }: any) {
+            if (session.user) {
+                if (token && token.role) session.user.role = token.role;
+                session.user.id = token?.id || token?.sub || user?.id;
             }
             return session;
         },
@@ -21,6 +22,7 @@ export const authOptions = {
         async jwt({ token, user }: any) { 
             if (user) {
                 token.role = user.role;
+                token.id = user.id;
             }
             return token;
         },
